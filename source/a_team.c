@@ -1485,6 +1485,7 @@ void ResetScores (qboolean playerScores)
 		ent->client->resp.last_damaged_players[0] = '\0';
 		ent->client->resp.deaths = 0;
 		ent->client->resp.killed_teammates = 0;
+		ent->client->resp.distance_covered = 0;
 		ent->enemy = NULL;
 		ResetKills(ent);
 		ResetStats(ent);
@@ -1501,6 +1502,7 @@ qboolean StartClient (edict_t * ent)
 	ent->solid = SOLID_NOT;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->client->resp.team = NOTEAM;
+	ent->client->resp.distance_covered = 0;
 	ent->client->ps.gunindex = 0;
 	gi.linkentity (ent);
 

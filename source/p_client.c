@@ -3874,15 +3874,12 @@ void ClientBeginServerFrame(edict_t * ent)
 		}
 		return;
 	}
-	if ( (ent->solid == SOLID_NOT || ent->deadflag == DEAD_DEAD) ||
+	if ( !(ent->solid == SOLID_NOT || ent->deadflag == DEAD_DEAD) &&
 		(teamplay->value && team_round_going)
 	) {
 		VectorClear(velocity);
-		velocity[0] = ent->velocity[0];
-		velocity[1] = ent->velocity[1];
-		velocity[2] = ent->velocity[2];
-
-		speed = VectorNormalize(velocity) / 1000;
+		VectorCopy(ent->velocity, velocity);
+		speed = (VectorNormalize(velocity) / 500);
 		client->resp.distance_covered += speed;
 	}
 
