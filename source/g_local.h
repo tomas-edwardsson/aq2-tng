@@ -1850,6 +1850,7 @@ typedef struct
 	int team;
 	gitem_t *weapon;
 	gitem_t *item;
+	float distance_covered;
 }
 gghost_t;
 

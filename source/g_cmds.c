@@ -1742,6 +1742,11 @@ void ClientCommand (edict_t * ent)
 		return;
 	}
 	//SLIC2
+	else if (Q_stricmp (cmd, "distance") == 0)
+	{
+		gi.cprintf(ent,PRINT_HIGH,"Your have travelled: %.2f Meters\n",ent->client->resp.streak);
+		return;
+	}
 	else if (Q_stricmp (cmd, "reload") == 0)
 	{
 		if(pause_time)

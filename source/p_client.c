@@ -3753,6 +3753,8 @@ void ClientBeginServerFrame(edict_t * ent)
 {
 	gclient_t *client;
 	int buttonMask;
+	float speed;
+	vec3_t velocity;
 
 	if (level.intermissiontime)
 		return;
@@ -3872,6 +3874,18 @@ void ClientBeginServerFrame(edict_t * ent)
 		}
 		return;
 	}
+	if ( (ent->solid == SOLID_NOT || ent->deadflag == DEAD_DEAD) ||
+		(teamplay->value && team_round_going)
+	) {
+		VectorClear(velocity);
+		velocity[0] = ent->velocity[0];
+		velocity[1] = ent->velocity[1];
+		velocity[2] = ent->velocity[2];
+
+		speed = VectorNormalize(velocity) / 1000;
+		client->resp.distance_covered += speed;
+	}
+
 	// add player trail so monsters can follow
 	if (!deathmatch->value && !visible(ent, PlayerTrail_LastSpot()))
 		PlayerTrail_Add(ent->s.old_origin);
