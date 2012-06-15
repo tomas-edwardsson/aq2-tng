@@ -374,7 +374,7 @@ void A_ScoreboardEndLevel (edict_t * ent, edict_t * killer)
       total++;
     }
   sprintf (string + strlen (string),
-	   "xv 0 yv 40 string2 \"Frags Player          Shots   Acc   FPM \" "
+	   "xv 0 yv 40 string2 \"Frags Player          Shots   Acc   FPM  Distance\" "
 	   "xv 0 yv 48 string2 \"žžžŸ žžžžžžžžžžžžžŸ žžžŸ žžžŸ žžžŸ\" ");
 
 //        strcpy (string, "xv 0 yv 32 string2 \"Frags Player          Time Ping Damage Kills\" "
@@ -418,10 +418,10 @@ void A_ScoreboardEndLevel (edict_t * ent, edict_t * killer)
       else
 	strcpy (damage, "******");
       sprintf (string + strlen (string),
-	       "xv 0 yv %d string \"%5d %-15s  %4d %5.1f  %4.1f\" ",
+	       "xv 0 yv %d string \"%5d %-15s  %4d %5.1f  %4.1f  %4.0f\" ",
 	       56 + i * 8,
 	       sortedscores[i],
-	       game.clients[sorted[i]].pers.netname, shots, accuracy, fpm);
+	       game.clients[sorted[i]].pers.netname, shots, accuracy, fpm, game.clients[sorted[i]].resp.distance_covered);
 
       if (strlen (string) > (maxsize - 100) && i < (total - 2))
 	{

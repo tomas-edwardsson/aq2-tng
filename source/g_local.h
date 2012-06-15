@@ -1423,6 +1423,7 @@ typedef struct
   int stats_shots[100];       // Shots fired
   int stats_hits[100];                // Shots hit
   int stats_headshot[100];    // Shots in head
+  float distance_covered;
 
   //AQ2:TNG - Slicer: Video Checking and further Cheat cheking vars
   char vidref[16];
@@ -1850,7 +1851,6 @@ typedef struct
 	int team;
 	gitem_t *weapon;
 	gitem_t *item;
-	float distance_covered;
 }
 gghost_t;
 
