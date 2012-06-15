@@ -35,9 +35,7 @@ BASE_CFLAGS=-DC_ONLY -DVERSION=\"$(VERSION)\"
 ifdef DEBUG
 	CFLAGS=$(BASE_CFLAGS) -g -Wall
 else
-	CFLAGS=$(BASE_CFLAGS) -march=$(TUNE) -mtune=$(TUNE) -O6 -ffast-math -funroll-loops \
-		-fomit-frame-pointer -fexpensive-optimizations -falign-loops=2 \
-		-falign-jumps=2 -falign-functions=2
+	CFLAGS=$(BASE_CFLAGS) -O2 -ffast-math -funroll-loops 
 endif
 
 DO_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
