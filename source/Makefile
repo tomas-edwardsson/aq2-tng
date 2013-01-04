@@ -17,10 +17,8 @@ RELEASE=no
 MACHINE=$(shell uname -m)
 SYSTEM=$(shell uname -s)
 ARCH=i386
-TUNE=$(MACHINE)
 
 ifeq ($(MACHINE),x86_64)
-TUNE=athlon64
 ARCH=x86_64
 endif
 
@@ -35,24 +33,28 @@ BASE_CFLAGS=-DC_ONLY -DVERSION=\"$(VERSION)\"
 ifdef DEBUG
 	CFLAGS=$(BASE_CFLAGS) -g -Wall
 else
-	CFLAGS=$(BASE_CFLAGS) -O2 -ffast-math -funroll-loops 
+	CFLAGS=$(BASE_CFLAGS) -O2
+endif
+
+ifdef X86
+ARCH=i386
+CFLAGS+=-m32
 endif
 
 DO_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
 DO_LINK=$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(GAME_OBJS) $(SHLIBLIBS)
 
 SHLIBEXT?=so
-SHLIBCFLAGS?=-fPIC
 SHLIBLDFLAGS?=-shared
 
 ifdef WIN32
-CC=wine cl -IC:\\include -nologo
-CFLAGS=$(BASE_CFLAGS) -DWIN32 -O1
-LINK=wine link -nologo
+CC=i686-w64-mingw32-gcc
+CFLAGS+=-DWIN32
 ARCH=x86
 SHLIBEXT=dll
-DO_CC=$(CC) $(CFLAGS) -Fo$@ -c $<
-DO_LINK=$(LINK) -LIBPATH:C:\\lib $(GAME_OBJS) ws2_32.lib /DEF:game.def /DLL /OUT:game$(ARCH).$(SHLIBEXT)
+SHLIBLIBS=-lws2_32
+else
+CFLAGS+=-fPIC
 endif
 
 #############################################################################

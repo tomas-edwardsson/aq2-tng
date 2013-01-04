@@ -622,7 +622,9 @@ void SelectItem6 (edict_t * ent, pmenu_t * p)
 void CreditsReturnToMain (edict_t * ent, pmenu_t * p)
 {
 	PMenu_Close (ent);
-	OpenJoinMenu (ent);
+	if (teamplay->value) {
+		OpenJoinMenu (ent);
+	}
 }
 
 //PG BUND BEGIN
@@ -938,6 +940,7 @@ void Team_f (edict_t * ent)
 void JoinTeam (edict_t * ent, int desired_team, int skip_menuclose)
 {
 	char *s, *a;
+	char temp[128];
 
 	if (!skip_menuclose)
 		PMenu_Close (ent);
@@ -1039,6 +1042,8 @@ void JoinTeam (edict_t * ent, int desired_team, int skip_menuclose)
 			}
 			else
 			{
+				Com_sprintf(temp, sizeof(temp),"%s is no longer ready to play!", teams[ent->client->resp.captain].name);
+				CenterPrintAll(temp);
 				teams[ent->client->resp.captain].ready = 0;
 			}
 		}
@@ -1047,14 +1052,15 @@ void JoinTeam (edict_t * ent, int desired_team, int skip_menuclose)
 		ent->client->resp.captain = 0;	//SLICER: Same here
 	}
 	//AQ2:TNG END
-	if (!skip_menuclose && !teamdm->value && ctf->value != 2)
+	if (!skip_menuclose && (!teamdm->value || dm_choose->value) && ctf->value != 2)
 		OpenWeaponMenu (ent);
 }
 
 void LeaveTeam (edict_t * ent)
 {
 	char *g;
-
+	char temp[128];
+	
 	if (ent->client->resp.team == NOTEAM)
 		return;
 
@@ -1108,6 +1114,8 @@ void LeaveTeam (edict_t * ent)
 			}
 			else
 			{
+				Com_sprintf(temp, sizeof(temp),"%s is no longer ready to play!", teams[ent->client->resp.captain].name);
+				CenterPrintAll(temp);
 				teams[ent->client->resp.captain].ready = 0;
 			}
 		}
@@ -2031,6 +2039,29 @@ void CheckTeamRules (void)
 			TourneyTimeEvent (T_START, team_round_countdown);
 		}
 		return;
+	}
+
+	// works like old CTF shield for TDM
+	if (dm_shield->value && (!teamplay->value || (teamdm->value && lights_camera_action == 0)) && !ctf->value)
+	{
+		for (i = 0; i < maxclients->value; i++)
+		{
+			if (!g_edicts[i + 1].inuse)
+				continue;
+			if (game.clients[i].ctf_uvtime > 0)
+			{
+				game.clients[i].ctf_uvtime--;
+				if (!game.clients[i].ctf_uvtime && team_round_going)
+				{
+					gi.centerprintf (&g_edicts[i + 1], "ACTION!");
+				}
+				else if (game.clients[i].ctf_uvtime % 10 == 0)
+				{
+					gi.centerprintf (&g_edicts[i + 1], "Shield %d",
+					game.clients[i].ctf_uvtime / 10);
+				}
+			}
+		}
 	}
 
 // AQ2:TNG - JBravo adding UVtime

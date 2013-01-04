@@ -1875,7 +1875,7 @@ void InitClientResp(gclient_t * client)
 	client->resp.ir = 1;
 
 	// TNG:Freud, restore weapons and items from last map.
-	if (auto_equip->value && teamplay->value && !teamdm->value && ctf->value != 2) {
+	if (auto_equip->value && ((teamplay->value && !teamdm->value) || dm_choose->value) && ctf->value != 2) {
 		if (item)
 			client->resp.item = item;
 		if (weapon)
@@ -2857,6 +2857,9 @@ void PutClientInServer(edict_t * ent)
 			ent->client->ctf_uvtime = uvtime->value;
 		}
 	}
+	if (dm_shield->value && (!teamplay->value || (teamdm->value && team_round_going && !lights_camera_action)) && uvtime->value) {
+		ent->client->ctf_uvtime = uvtime->value;
+	}
 //FIREBLADE
 	if (!going_observer && !teamplay->value) {	// this handles telefrags...
 		KillBox(ent);
@@ -2916,7 +2919,7 @@ void PutClientInServer(edict_t * ent)
 			AllItems(ent);
 		}
 
-		if (teamplay->value && !teamdm->value && ctf->value != 2)
+		if ((teamplay->value && !teamdm->value && ctf->value != 2) || (!ctf->value && dm_choose->value))
 			EquipClient(ent);
 		else if (deathmatch->value)
 			EquipClientDM(ent);
@@ -3419,7 +3422,7 @@ void CreateGhost(edict_t * ent)
 edict_t *pm_passent;
 
 // pmove doesn't need to know about passent and contentmask
-trace_t PM_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
+trace_t q_gameabi PM_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
 {
 	if (pm_passent && pm_passent->health > 0)
 		return gi.trace(start, mins, maxs, end, pm_passent, MASK_PLAYERSOLID);
@@ -3492,6 +3495,11 @@ void ClientThink(edict_t * ent, usercmd_t * ucmd)
 		}
 	}
 	//FIREBLADE
+
+	// show team or weapon menu immediately when connected
+	if (auto_menu->value && !client->menu && !client->resp.menu_shown && (teamplay->value || dm_choose->value)) {
+		Cmd_Inven_f(ent);
+	}
 
 	if(pause_time > 0)
 	{

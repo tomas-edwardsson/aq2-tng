@@ -601,8 +601,11 @@ void InitGame (void)
 
 	auto_join = gi.cvar ("auto_join", "0", 0);
 	auto_equip = gi.cvar ("auto_equip", "0", 0);
+	auto_menu = gi.cvar ("auto_menu", "0", 0);
 	eventeams = gi.cvar ("eventeams", "0", 0);
 	use_balancer = gi.cvar ("use_balancer", "0", 0);
+	dm_choose = gi.cvar ("dm_choose", "0", 0);
+	dm_shield = gi.cvar ("dm_shield", "0", 0);
 
 	use_punch = gi.cvar ("use_punch", "1", 0);
 
